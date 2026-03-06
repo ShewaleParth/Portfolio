@@ -1,154 +1,188 @@
-import { ExternalLink, Github, Bot, BarChart3, FileText } from 'lucide-react';
+import React, { ComponentType, useRef, useEffect } from 'react';
+import { Github, Bot, BarChart3, FileText, ArrowUpRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const ProjectsSection = () => {
-  const projects = [
-    {
-      title: 'Misinformation Detection System',
-      subtitle: 'Agentic AI for Fact Verification',
-      description:
-        'Built an Agentic AI misinformation detection system using multi-agent LLM workflows (Gemini + Groq/OpenAI) for claim verification, stance analysis, and credibility scoring.',
-      techStack: [
-        'Python',
-        'FastAPI',
-        'React.js',
-        'LangChain',
-        'Gemini',
-        'Groq',
-        'Docker',
-        'Tailwind',
-      ],
-      highlights: [
-        'Multi-agent LLM workflows',
-        'Autonomous evidence retrieval',
-        'Explainable AI outputs',
-      ],
-      icon: Bot,
-      gradient: 'from-cyan-500 to-blue-500',
-    },
-    {
-      title: 'AI-Based Inventory Control',
-      subtitle: 'Predictive Analytics for Depot Management',
-      description:
-        'Designed ML models for predictive stock depletion and demand forecasting using PyTorch Forecasting & NeuralProphet with real-time anomaly detection.',
-      techStack: [
-        'Python',
-        'PyTorch',
-        'NeuralProphet',
-        'FastAPI',
-        'Streamlit',
-        'SQL',
-        'Docker',
-      ],
-      highlights: [
-        'Real-time anomaly detection',
-        'Demand forecasting',
-        'Automated alerts system',
-      ],
-      icon: BarChart3,
-      gradient: 'from-emerald-500 to-teal-500',
-    },
-    {
-      title: 'GenAI Business Reports',
-      subtitle: 'Automated Executive Insights',
-      description:
-        'Built a GenAI-powered assistant to auto-generate executive reports and business insights from structured and unstructured data using RAG pipeline.',
-      techStack: [
-        'Python',
-        'Snowflake',
-        'LangChain',
-        'Llama-3',
-        'Pinecone',
-        'FastAPI',
-        'Airflow',
-        'Docker',
-      ],
-      highlights: [
-        'RAG with LangChain & Pinecone',
-        'Automated PDF generation',
-        'Real-time KPI tracking',
-      ],
-      icon: FileText,
-      gradient: 'from-violet-500 to-purple-500',
-    },
-  ];
+if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger);
+
+const PROJECTS = [
+  {
+    title: 'MisinfoGuard AI',
+    category: 'Agentic AI System',
+    description:
+      'Multi-agent LLM system for automated fact-checking and credibility scoring using autonomous retrieval and explainable AI workflows.',
+    stack: ['Python', 'FastAPI', 'React', 'LangChain', 'Gemini'],
+    highlights: ['Multi-agent workflows', 'Autonomous retrieval', 'Explainable AI'],
+    icon: Bot,
+    color: '#00d4ff',
+    github: 'https://github.com/ShewaleParth',
+  },
+  {
+    title: 'Predictive Inventory',
+    category: 'ML Forecasting',
+    description:
+      'ML pipeline for predictive stock depletion and demand forecasting with anomaly detection and real-time alert system using NeuralProphet.',
+    stack: ['Python', 'PyTorch', 'NeuralProphet', 'Streamlit', 'SQL'],
+    highlights: ['Anomaly detection', 'Demand forecasting', 'Alerts system'],
+    icon: BarChart3,
+    color: '#8b5cf6',
+    github: 'https://github.com/ShewaleParth',
+  },
+  {
+    title: 'GenAI Reports',
+    category: 'Automated Insights',
+    description:
+      'GenAI-powered assistant that auto-generates executive reports from enterprise data using RAG pipeline, Pinecone vector DB, and Airflow scheduling.',
+    stack: ['Python', 'LangChain', 'Llama-3', 'Pinecone', 'Airflow'],
+    highlights: ['RAG Pipeline', 'PDF generation', 'KPI tracking'],
+    icon: FileText,
+    color: '#10b981',
+    github: 'https://github.com/ShewaleParth',
+  },
+];
+
+interface Project {
+  title: string; category: string; description: string;
+  stack: string[]; highlights: string[]; color: string;
+  icon: ComponentType<{ className?: string; style?: React.CSSProperties }>; github: string;
+}
+
+const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    const ctx = gsap.context(() => {
+      gsap.from(card, {
+        opacity: 0, y: 40, duration: 0.7, delay: index * 0.12,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: card, start: 'top 82%', toggleActions: 'play none none none' },
+      });
+    }, card);
+    return () => ctx.revert();
+  }, [index]);
 
   return (
-    <section id="projects" className="py-24 relative">
-      {/* Background */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+    <div
+      ref={cardRef}
+      className="sci-card p-6 flex flex-col h-full group relative overflow-hidden"
+    >
+      {/* Top accent line */}
+      <div
+        className="absolute top-0 left-0 right-0 h-px opacity-60 group-hover:opacity-100 transition-opacity"
+        style={{ background: `linear-gradient(90deg, transparent, ${project.color}, transparent)` }}
+      />
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          {/* Section Header */}
-          <div className="text-center mb-16">
-            <p className="font-mono text-primary mb-2">{'// Featured Projects'}</p>
-            <h2 className="section-title">
-              Things I've <span className="text-gradient">Built</span>
-            </h2>
-            <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
-              A collection of AI/ML projects showcasing my skills in building end-to-end
-              intelligent systems.
-            </p>
-          </div>
+      {/* Background glow on hover */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-xl"
+        style={{ background: `radial-gradient(circle at 50% 0%, ${project.color}08, transparent 70%)` }}
+      />
 
-          {/* Projects Grid */}
-          <div className="space-y-8">
-            {projects.map((project, index) => (
-              <div
-                key={project.title}
-                className="project-card group relative overflow-hidden"
-              >
-                {/* Gradient Accent */}
-                <div
-                  className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${project.gradient} opacity-10 rounded-full blur-3xl group-hover:opacity-20 transition-opacity`}
-                />
-
-                <div className="relative z-10 grid lg:grid-cols-2 gap-8 items-center">
-                  {/* Content */}
-                  <div className={index % 2 === 1 ? 'lg:order-2' : ''}>
-                    {/* Icon & Title */}
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className={`p-3 rounded-xl bg-gradient-to-br ${project.gradient}`}>
-                        <project.icon className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold">{project.title}</h3>
-                        <p className="text-sm text-primary font-mono">{project.subtitle}</p>
-                      </div>
-                    </div>
-
-                    <p className="text-muted-foreground mb-6">{project.description}</p>
-
-                    {/* Highlights */}
-                    <ul className="space-y-2 mb-6">
-                      {project.highlights.map((highlight) => (
-                        <li key={highlight} className="flex items-center gap-2 text-sm">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                          {highlight}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Tech Stack */}
-                  <div className={index % 2 === 1 ? 'lg:order-1' : ''}>
-                    <p className="font-mono text-sm text-primary mb-4">Tech Stack:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {project.techStack.map((tech) => (
-                        <span key={tech} className="skill-tag text-xs">
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* Header */}
+      <div className="flex items-start justify-between mb-5">
+        <div
+          className="w-10 h-10 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
+          style={{ background: `${project.color}14`, border: `1px solid ${project.color}30` }}
+        >
+          <project.icon className="w-5 h-5" style={{ color: project.color }} />
         </div>
+        <a
+          href={project.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-8 h-8 flex items-center justify-center rounded-lg border border-white/[0.07] text-white/30 hover:text-white hover:border-white/20 transition-all"
+        >
+          <Github className="w-3.5 h-3.5" />
+        </a>
       </div>
-    </section>
+
+      {/* Category */}
+      <div className="font-mono-code text-[10px] tracking-[0.15em] mb-2" style={{ color: project.color }}>
+        {project.category.toUpperCase()}
+      </div>
+
+      {/* Title */}
+      <h3 className="text-lg font-display font-bold text-white mb-3 group-hover:text-white transition-colors">
+        {project.title}
+      </h3>
+
+      {/* Description */}
+      <p className="text-white/45 text-sm leading-relaxed flex-grow mb-5">
+        {project.description}
+      </p>
+
+      {/* Highlights */}
+      <div className="flex flex-wrap gap-1.5 mb-5">
+        {project.highlights.map((h) => (
+          <span
+            key={h}
+            className="px-2.5 py-1 rounded-full text-[10px] font-mono-code"
+            style={{ background: `${project.color}10`, border: `1px solid ${project.color}25`, color: `${project.color}cc` }}
+          >
+            {h}
+          </span>
+        ))}
+      </div>
+
+      {/* Stack */}
+      <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
+        <div className="flex flex-wrap gap-1.5">
+          {project.stack.slice(0, 3).map((tech) => (
+            <span key={tech} className="text-[10px] font-mono-code text-white/30 px-2 py-0.5 bg-white/[0.04] rounded">
+              {tech}
+            </span>
+          ))}
+          {project.stack.length > 3 && (
+            <span className="text-[10px] font-mono-code text-white/30 px-2 py-0.5 bg-white/[0.04] rounded">
+              +{project.stack.length - 3}
+            </span>
+          )}
+        </div>
+        <ArrowUpRight className="w-4 h-4 text-white/20 group-hover:text-white group-hover:scale-110 transition-all" />
+      </div>
+    </div>
   );
 };
+
+const ProjectsSection = () => (
+  <section id="projects" className="py-28 relative bg-[#050a0f]">
+    <div className="absolute inset-0 bg-dot opacity-20" />
+
+    <div className="max-w-7xl mx-auto px-6 relative z-10">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14"
+      >
+        <div>
+          <div className="section-eyebrow mb-4">featured work</div>
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-white tracking-tight">
+            Selected <span className="text-gradient-purple">Projects</span>
+          </h2>
+        </div>
+        <a
+          href="https://github.com/ShewaleParth"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-outline text-xs py-2.5 self-start flex items-center gap-2"
+        >
+          <Github className="w-3.5 h-3.5" /> View GitHub
+        </a>
+      </motion.div>
+
+      {/* Grid */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {PROJECTS.map((project, index) => (
+          <ProjectCard key={project.title} project={project} index={index} />
+        ))}
+      </div>
+    </div>
+  </section>
+);
 
 export default ProjectsSection;

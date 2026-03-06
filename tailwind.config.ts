@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
+        display: ['Space Grotesk', 'Inter', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -51,6 +52,9 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        cyan: { DEFAULT: '#00d4ff' },
+        purple: { DEFAULT: '#8b5cf6' },
+        green: { DEFAULT: '#10b981' },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -70,6 +74,11 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      boxShadow: {
+        'glow-cyan': '0 0 20px rgba(0, 212, 255, 0.25)',
+        'glow-purple': '0 0 20px rgba(139, 92, 246, 0.25)',
+        'glow-green': '0 0 20px rgba(16, 185, 129, 0.25)',
       },
     },
   },
